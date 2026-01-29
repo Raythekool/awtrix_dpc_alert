@@ -168,6 +168,7 @@ The script automatically downloads icons from LaMetric and uploads them to your 
    - **Icons**: Customize icon IDs for each risk type
    - **Enable Sound**: Toggle sound notifications
    - **Sound Level**: Minimum alert level to play sound (default: Orange/High)
+   - **Send AWTRIX Notification**: Send temporary pop-up notifications in addition to persistent custom app
 5. Save the automation
 
 ### 🧪 Testing Your Setup
@@ -181,6 +182,7 @@ After installing the test blueprint, create an automation to send test notificat
    - Select your AWTRIX device(s)
    - Choose a test criticality level (1-4)
    - Enable sound if desired
+   - Toggle between custom app (persistent) or notification (temporary pop-up)
 5. Save the automation and trigger it manually to test
 
 ### 🗑️ Clearing the Display
@@ -202,9 +204,10 @@ If you need to remove the DPC Alert app from your AWTRIX devices:
   - Red: Extreme
 - **Customizable icons**: Use different icons for each risk type
 - **Sound notifications**: Optional sound alerts for critical warnings
+- **AWTRIX notifications**: Send temporary pop-up notifications in addition to persistent custom app
 - **Multi-device**: Supports multiple AWTRIX devices simultaneously
 - **Auto-clear**: Automatically removes alerts when they are no longer active
-- **Test mode**: Send test notifications to verify configuration
+- **Test mode**: Send test notifications to verify configuration (custom app or notification mode)
 - **Manual clear**: Remove apps from display when needed
 
 ## 🔧 Advanced Configuration
@@ -217,6 +220,16 @@ The "Message Duration" parameter controls how long the alert remains on screen:
 
 ### Using Custom Icons
 
+
+### AWTRIX Notifications vs Custom Apps
+
+The blueprint supports two display modes:
+
+- Custom app alerts are published to MQTT topic `{prefix}/custom/dpc_alert`
+- Notifications are published to MQTT topic `{prefix}/notify` (temporary pop-ups)ble until cleared. Published to `{prefix}/custom/dpc_alert`
+- **Notification (optional)**: Temporary pop-up notifications that auto-dismiss. Published to `{prefix}/notify`
+
+You can enable both modes simultaneously - the custom app stays persistent while notifications provide immediate pop-up alerts.
 You can use any icon from LaMetric or upload custom ones to your AWTRIX. Just enter the icon ID in the corresponding fields.
 
 ## 📝 Notes
