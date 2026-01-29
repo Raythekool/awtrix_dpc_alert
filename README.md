@@ -12,6 +12,8 @@ Before using this blueprint, make sure you have:
 
 ## 📦 Installation
 
+### Main Blueprint
+
 ### Method 1: Automatic Import (recommended)
 
 1. Click the button below to import the blueprint:
@@ -36,6 +38,20 @@ Before using this blueprint, make sure you have:
 1. Download the `awtrix_dpc_alert.yaml` file
 2. Copy the file to the `blueprints/automation/` folder in your Home Assistant configuration
 3. Restart Home Assistant or reload automations
+
+### Optional Helper Blueprints
+
+For testing and management, you can also install these helper blueprints:
+
+**🧪 Test Notification Blueprint** - Send test notifications to verify your setup:
+```
+https://github.com/Raythekool/awtrix_dpc_alert/blob/main/awtrix_dpc_alert_test.yaml
+```
+
+**🗑️ Clear App Blueprint** - Remove the DPC Alert app from all AWTRIX devices:
+```
+https://github.com/Raythekool/awtrix_dpc_alert/blob/main/awtrix_dpc_alert_clear.yaml
+```
 
 ## 🎨 Recommended Icons
 
@@ -123,7 +139,30 @@ The script automatically downloads icons from LaMetric and uploads them to your 
      - 4 = Red (Extreme criticality)
    - **Message Duration**: Display time in seconds (default: 20)
    - **Icons**: Customize icon IDs for each risk type
+   - **Enable Sound**: Toggle sound notifications
+   - **Sound Level**: Minimum alert level to play sound (default: Orange/High)
 5. Save the automation
+
+### 🧪 Testing Your Setup
+
+After installing the test blueprint, create an automation to send test notifications:
+
+1. Go to Home Assistant → Settings → Automations & Scenes
+2. Click "Create Automation" → "Use a blueprint"
+3. Select "AWTRIX DPC Alert - Test Notification 🧪"
+4. Configure:
+   - Select your AWTRIX device(s)
+   - Choose a test criticality level (1-4)
+   - Enable sound if desired
+5. Save the automation and trigger it manually to test
+
+### 🗑️ Clearing the Display
+
+If you need to remove the DPC Alert app from your AWTRIX devices:
+
+1. Create an automation using the "AWTRIX DPC Alert - Clear App 🗑️" blueprint
+2. Select your AWTRIX device(s)
+3. Save and trigger it manually whenever needed
 
 ## 🎯 Features
 
@@ -135,8 +174,11 @@ The script automatically downloads icons from LaMetric and uploads them to your 
   - Orange: High
   - Red: Extreme
 - **Customizable icons**: Use different icons for each risk type
+- **Sound notifications**: Optional sound alerts for critical warnings
 - **Multi-device**: Supports multiple AWTRIX devices simultaneously
 - **Auto-clear**: Automatically removes alerts when they are no longer active
+- **Test mode**: Send test notifications to verify configuration
+- **Manual clear**: Remove apps from display when needed
 
 ## 🔧 Advanced Configuration
 

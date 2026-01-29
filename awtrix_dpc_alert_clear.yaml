@@ -1,0 +1,54 @@
+blueprint:
+  name: "AWTRIX DPC Alert - Clear App 🗑️"
+  description:
+    "Rimuove l'app DPC Alert da tutti i dispositivi AWTRIX configurati.\n\n
+    Questo blueprint crea un'automazione che può essere attivata manualmente per rimuovere
+    l'applicazione DPC Alert da tutti i dispositivi AWTRIX.\n\n
+    Utile per testare o quando si vuole pulire il display."
+  domain: automation
+  input:
+    awtrix:
+      name: Dispositivo AWTRIX
+      description: Seleziona i dispositivi AWTRIX da cui rimuovere l'app
+      selector:
+        device:
+          integration: mqtt
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+          multiple: true
+
+mode: single
+
+variables:
+  device_ids: !input awtrix
+  app_topic: "dpc_alert"
+  devices_topics: |
+    {%- macro get_device_topic(device_id) %}
+      {{ states((device_entities(device_id) | select('search','device_topic') | list)[0]) }}
+    {%- endmacro %}
+    {%- set ns = namespace(devices=[]) %}
+    {%- for device_id in device_ids %}
+      {%- set device=get_device_topic(device_id)|replace('','') %}
+      {% set ns.devices = ns.devices + [ device ~ '/custom/' ~ app_topic] %}
+    {%- endfor %}
+    {{ ns.devices | reject('match','unavailable') | list }}
+
+trigger: []
+
+condition: []
+
+action:
+  - repeat:
+      for_each: "{{ devices_topics }}"
+      sequence:
+        - service: mqtt.publish
+          data:
+            qos: 0
+            retain: false
+            topic: "{{ repeat.item }}"
+            payload: ""
+
+  - service: system_log.write
+    data:
+      message: "DPC Alert app cleared from {{ devices_topics|length }} AWTRIX device(s)"
+      level: info

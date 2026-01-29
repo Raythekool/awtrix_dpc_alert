@@ -1,0 +1,139 @@
+blueprint:
+  name: "AWTRIX DPC Alert - Test Notification 🧪"
+  description:
+    "Invia una notifica di test all'AWTRIX per verificare la configurazione.\n\n
+    Questo blueprint crea un'automazione che può essere attivata manualmente per inviare
+    una notifica di test ai dispositivi AWTRIX.\n\n
+    Utile per verificare che le icone e le impostazioni siano corrette."
+  domain: automation
+  input:
+    awtrix:
+      name: Dispositivo AWTRIX
+      description: Seleziona i dispositivi AWTRIX per il test
+      selector:
+        device:
+          integration: mqtt
+          manufacturer: Blueforcer
+          model: AWTRIX 3
+          multiple: true
+
+    test_level:
+      name: Livello di test
+      description: |
+        Seleziona il livello di criticità da testare:
+        1 = Verde (Ordinaria)
+        2 = Giallo (Moderata)
+        3 = Arancione (Elevata)
+        4 = Rosso (Estrema)
+      selector:
+        number:
+          min: 1
+          max: 4
+          mode: box
+          step: 1
+      default: 3
+
+    message_duration:
+      name: Durata messaggio ⏱️
+      description: Quanto tempo deve rimanere il messaggio sullo schermo (in secondi)
+      selector:
+        number:
+          min: 0
+          max: 300
+          unit_of_measurement: sec
+          step: 1
+          mode: slider
+      default: 20
+
+    icon_test:
+      name: Icona di test
+      description: ID dell'icona da visualizzare nel test
+      selector:
+        text: {}
+      default: "16754"
+
+    enable_sound:
+      name: Test con suono 🔊
+      description: Riproduce un suono con la notifica di test
+      selector:
+        boolean: {}
+      default: false
+
+    sound_file:
+      name: File Suono
+      description: Nome del file audio da riprodurre (senza estensione)
+      selector:
+        text: {}
+      default: "alarm"
+
+mode: single
+
+variables:
+  device_ids: !input awtrix
+  app_topic: "dpc_alert"
+  test_level: !input test_level
+  message_duration: !input message_duration
+  icon_test: !input icon_test
+  enable_sound: !input enable_sound
+  sound_file: !input sound_file
+
+  devices_topics: |
+    {%- macro get_device_topic(device_id) %}
+      {{ states((device_entities(device_id) | select('search','device_topic') | list)[0]) }}
+    {%- endmacro %}
+    {%- set ns = namespace(devices=[]) %}
+    {%- for device_id in device_ids %}
+      {%- set device=get_device_topic(device_id)|replace('','') %}
+      {% set ns.devices = ns.devices + [ device ~ '/custom/' ~ app_topic] %}
+    {%- endfor %}
+    {{ ns.devices | reject('match','unavailable') | list }}
+
+  color_map: |
+    {{ dict({
+      1: "#4CAF50",
+      2: "#FFEB3B",
+      3: "#FF9800",
+      4: "#F44336"
+    }) }}
+
+  level_names: |
+    {{ dict({
+      1: "Ordinaria",
+      2: "Moderata",
+      3: "Elevata",
+      4: "Estrema"
+    }) }}
+
+  test_payload: |
+    {%- set alert_obj = {
+      'icon': icon_test,
+      'text': 'TEST DPC Alert - Livello ' ~ level_names[test_level],
+      'duration': message_duration,
+      'color': color_map[test_level],
+      'pushIcon': 2,
+      'repeat': 1
+    } %}
+    {%- if enable_sound %}
+      {%- set _ = alert_obj.update({'sound': sound_file}) %}
+    {%- endif %}
+    {{ alert_obj|tojson }}
+
+trigger: []
+
+condition: []
+
+action:
+  - repeat:
+      for_each: "{{ devices_topics }}"
+      sequence:
+        - service: mqtt.publish
+          data:
+            qos: 0
+            retain: false
+            topic: "{{ repeat.item }}"
+            payload: "{{ test_payload }}"
+
+  - service: system_log.write
+    data:
+      message: "DPC Alert test notification sent to {{ devices_topics|length }} AWTRIX device(s) - Level {{ test_level }}"
+      level: info
