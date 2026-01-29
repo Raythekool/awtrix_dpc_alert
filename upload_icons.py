@@ -39,16 +39,43 @@ def validate_ip_or_hostname(address: str) -> bool:
     Returns:
         True if valid, False otherwise
     """
+    if not address:
+        return False
+    
+    # Check for localhost
+    if address in ['localhost', '127.0.0.1']:
+        return True
+    
     # Check for IPv4
     ipv4_pattern = r'^(\d{1,3}\.){3}\d{1,3}$'
     if re.match(ipv4_pattern, address):
         # Verify each octet is <= 255
-        octets = address.split('.')
-        return all(0 <= int(octet) <= 255 for octet in octets)
+        try:
+            octets = address.split('.')
+            return all(0 <= int(octet) <= 255 for octet in octets)
+        except (ValueError, AttributeError):
+            return False
     
-    # Check for hostname (simplified check)
-    hostname_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$'
+    # Check for hostname (simplified check, allows single char labels)
+    hostname_pattern = r'^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$|^[a-zA-Z0-9]$'
     return bool(re.match(hostname_pattern, address))
+
+
+def sanitize_icon_name(name: str) -> str:
+    """
+    Sanitize icon name to contain only safe characters.
+    
+    Args:
+        name: Icon name to sanitize
+        
+    Returns:
+        Sanitized name with only alphanumeric, hyphens, and underscores
+    """
+    # Replace any character that's not alphanumeric, hyphen, or underscore
+    sanitized = re.sub(r'[^a-zA-Z0-9\-_]', '_', name)
+    # Remove any leading/trailing underscores
+    sanitized = sanitized.strip('_')
+    return sanitized if sanitized else "icon"
 
 
 def download_icon(icon_id: int) -> Tuple[bytes, str]:
@@ -76,7 +103,7 @@ def download_icon(icon_id: int) -> Tuple[bytes, str]:
         except urllib.error.HTTPError:
             continue
     
-    raise urllib.error.URLError(f"Could not download icon {icon_id}")
+    raise ValueError(f"Could not download icon {icon_id} - icon not found or server error")
 
 
 def upload_icon_to_awtrix(device_ip: str, icon_name: str, icon_data: bytes, file_ext: str) -> bool:
@@ -92,6 +119,9 @@ def upload_icon_to_awtrix(device_ip: str, icon_name: str, icon_data: bytes, file
     Returns:
         True if successful, False otherwise
     """
+    # Sanitize the icon name to prevent path traversal or special character issues
+    safe_icon_name = sanitize_icon_name(icon_name)
+    
     # AWTRIX uses an /edit endpoint for file uploads
     url = f"http://{device_ip}/edit"
     
@@ -101,7 +131,7 @@ def upload_icon_to_awtrix(device_ip: str, icon_name: str, icon_data: bytes, file
     # Build the multipart body
     body = []
     body.append(f'--{boundary}'.encode())
-    body.append(f'Content-Disposition: form-data; name="data"; filename="/{icon_name}.{file_ext}"'.encode())
+    body.append(f'Content-Disposition: form-data; name="data"; filename="/{safe_icon_name}.{file_ext}"'.encode())
     body.append(f'Content-Type: image/{file_ext}'.encode())
     body.append(b'')
     body.append(icon_data)
@@ -123,12 +153,12 @@ def upload_icon_to_awtrix(device_ip: str, icon_name: str, icon_data: bytes, file
     try:
         with urllib.request.urlopen(req, timeout=REQUEST_TIMEOUT) as response:
             if response.status in [200, 201]:
-                print(f"  ✓ Uploaded {icon_name}.{file_ext} to AWTRIX")
+                print(f"  ✓ Uploaded {safe_icon_name}.{file_ext} to AWTRIX")
                 return True
             else:
                 print(f"  ✗ Upload failed with status {response.status}")
                 return False
-    except urllib.error.URLError as e:
+    except (urllib.error.URLError, OSError) as e:
         print(f"  ✗ Upload failed: {e}")
         return False
 
@@ -154,7 +184,7 @@ def process_icon(device_ip: str, icon_name: str, icon_id: int) -> bool:
         # Upload to AWTRIX
         return upload_icon_to_awtrix(device_ip, icon_name, icon_data, file_ext)
     
-    except (urllib.error.URLError, ValueError) as e:
+    except (urllib.error.URLError, OSError, ValueError) as e:
         print(f"  ✗ Error: {e}")
         return False
 
