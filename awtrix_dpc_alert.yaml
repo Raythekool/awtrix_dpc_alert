@@ -154,7 +154,7 @@ variables:
   sound_level: !input sound_level
   sound_file: !input sound_file
 
-  # Mappa colori per livelli di criticità
+  # Color map for criticality levels
   color_map: |
     {{ dict({
       0: "#4CAF50",
@@ -164,7 +164,7 @@ variables:
       4: "#F44336"
     }) }}
 
-  # Mappa nomi criticità
+  # Criticality level names
   level_names: |
     {{ dict({
       0: "Nessuna",
@@ -174,7 +174,7 @@ variables:
       4: "Estrema"
     }) }}
 
-  # Costruisci payload con tutti gli alert attivi
+  # Build payload with all active alerts
   alerts: |
     {%- set ns = namespace(alerts=[]) %}
     {%- for sensor in dpc_sensors %}
@@ -233,7 +233,7 @@ action:
   - repeat:
       for_each: "{{ devices_topics }}"
       sequence:
-        # Rimuovi app precedente
+        # Remove previous app
         - service: mqtt.publish
           data:
             qos: 0
@@ -241,7 +241,7 @@ action:
             topic: "{{ repeat.item }}"
             payload: ""
 
-        # Pubblica nuovi alert (se presenti)
+        # Publish new alerts (if present)
         - if:
             - condition: template
               value_template: "{{ alerts|length > 0 }}"

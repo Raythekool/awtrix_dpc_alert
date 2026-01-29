@@ -1,15 +1,15 @@
 blueprint:
   name: "AWTRIX DPC Alert - Test Notification 🧪"
   description:
-    "Invia una notifica di test all'AWTRIX per verificare la configurazione.\n\n
-    Questo blueprint crea un'automazione che può essere attivata manualmente per inviare
-    una notifica di test ai dispositivi AWTRIX.\n\n
-    Utile per verificare che le icone e le impostazioni siano corrette."
+    "Sends a test notification to AWTRIX to verify the configuration.\n\n
+    This blueprint creates an automation that can be manually triggered to send
+    a test notification to AWTRIX devices.\n\n
+    Useful to verify that icons and settings are correct."
   domain: automation
   input:
     awtrix:
-      name: Dispositivo AWTRIX
-      description: Seleziona i dispositivi AWTRIX per il test
+      name: AWTRIX Device
+      description: Select the AWTRIX devices for testing
       selector:
         device:
           integration: mqtt
@@ -18,13 +18,13 @@ blueprint:
           multiple: true
 
     test_level:
-      name: Livello di test
+      name: Test Level
       description: |
-        Seleziona il livello di criticità da testare:
-        1 = Verde (Ordinaria)
-        2 = Giallo (Moderata)
-        3 = Arancione (Elevata)
-        4 = Rosso (Estrema)
+        Select the criticality level to test:
+        1 = Green (Ordinary)
+        2 = Yellow (Moderate)
+        3 = Orange (High)
+        4 = Red (Extreme)
       selector:
         number:
           min: 1
@@ -34,8 +34,8 @@ blueprint:
       default: 3
 
     message_duration:
-      name: Durata messaggio ⏱️
-      description: Quanto tempo deve rimanere il messaggio sullo schermo (in secondi)
+      name: Message Duration ⏱️
+      description: How long the message should remain on screen (in seconds)
       selector:
         number:
           min: 0
@@ -46,22 +46,22 @@ blueprint:
       default: 20
 
     icon_test:
-      name: Icona di test
-      description: ID dell'icona da visualizzare nel test
+      name: Test Icon
+      description: Icon ID to display in the test
       selector:
         text: {}
       default: "16754"
 
     enable_sound:
-      name: Test con suono 🔊
-      description: Riproduce un suono con la notifica di test
+      name: Test with Sound 🔊
+      description: Play a sound with the test notification
       selector:
         boolean: {}
       default: false
 
     sound_file:
-      name: File Suono
-      description: Nome del file audio da riprodurre (senza estensione)
+      name: Sound File
+      description: Audio file name to play (without extension)
       selector:
         text: {}
       default: "alarm"

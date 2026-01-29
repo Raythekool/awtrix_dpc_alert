@@ -1,15 +1,15 @@
 blueprint:
   name: "AWTRIX DPC Alert - Clear App 🗑️"
   description:
-    "Rimuove l'app DPC Alert da tutti i dispositivi AWTRIX configurati.\n\n
-    Questo blueprint crea un'automazione che può essere attivata manualmente per rimuovere
-    l'applicazione DPC Alert da tutti i dispositivi AWTRIX.\n\n
-    Utile per testare o quando si vuole pulire il display."
+    "Removes the DPC Alert app from all configured AWTRIX devices.\n\n
+    This blueprint creates an automation that can be manually triggered to remove
+    the DPC Alert application from all AWTRIX devices.\n\n
+    Useful for testing or when you want to clean up the display."
   domain: automation
   input:
     awtrix:
-      name: Dispositivo AWTRIX
-      description: Seleziona i dispositivi AWTRIX da cui rimuovere l'app
+      name: AWTRIX Device
+      description: Select the AWTRIX devices from which to remove the app
       selector:
         device:
           integration: mqtt

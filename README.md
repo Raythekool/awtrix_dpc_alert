@@ -43,12 +43,39 @@ Before using this blueprint, make sure you have:
 
 For testing and management, you can also install these helper blueprints:
 
-**🧪 Test Notification Blueprint** - Send test notifications to verify your setup:
+#### 🧪 Test Notification Blueprint
+
+This blueprint allows you to send test notifications to your AWTRIX devices to verify your configuration is working correctly.
+
+**Features:**
+- Send test notifications with different criticality levels (1-4)
+- Test icon display
+- Test sound notifications
+- Configurable message duration
+
+**Import:**
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2FRaythekool%2Fawtrix_dpc_alert%2Fblob%2Fmain%2Fawtrix_dpc_alert_test.yaml)
+
+Or manually import this URL:
 ```
 https://github.com/Raythekool/awtrix_dpc_alert/blob/main/awtrix_dpc_alert_test.yaml
 ```
 
-**🗑️ Clear App Blueprint** - Remove the DPC Alert app from all AWTRIX devices:
+#### 🗑️ Clear App Blueprint
+
+This blueprint removes the DPC Alert custom app from your AWTRIX devices when you need to clear the display.
+
+**Features:**
+- Quickly remove DPC Alert app from all configured devices
+- Useful for troubleshooting or cleaning up
+- Manually triggered when needed
+
+**Import:**
+
+[![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2FRaythekool%2Fawtrix_dpc_alert%2Fblob%2Fmain%2Fawtrix_dpc_alert_clear.yaml)
+
+Or manually import this URL:
 ```
 https://github.com/Raythekool/awtrix_dpc_alert/blob/main/awtrix_dpc_alert_clear.yaml
 ```
