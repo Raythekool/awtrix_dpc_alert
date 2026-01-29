@@ -127,6 +127,16 @@ variables:
       4: "#F44336"
     }) }}
   
+  # Mappa nomi criticità
+  level_names: |
+    {{ dict({
+      0: "Nessuna",
+      1: "Ordinaria",
+      2: "Moderata",
+      3: "Elevata",
+      4: "Estrema"
+    }) }}
+  
   # Costruisci payload con tutti gli alert attivi
   alerts: |
     {%- set ns = namespace(alerts=[]) %}
