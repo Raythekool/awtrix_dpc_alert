@@ -11,5 +11,10 @@ if ! command -v python3 &> /dev/null; then
     exit 1
 fi
 
-# Run the Python script with all arguments
-python3 "$PYTHON_SCRIPT" "$@"
+# If no arguments provided, use --default-icons
+if [ $# -eq 0 ]; then
+    python3 "$PYTHON_SCRIPT" --default-icons
+else
+    # Run the Python script with all arguments
+    python3 "$PYTHON_SCRIPT" "$@"
+fi

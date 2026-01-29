@@ -1,143 +1,149 @@
-# AWTRIX Protezione Civile Alert 🇮🇹
+# AWTRIX Civil Protection Alert 🇮🇹
 
-Blueprint per Home Assistant che mostra gli alert meteo della Protezione Civile italiana sul tuo dispositivo AWTRIX3.
+Blueprint for Home Assistant that displays Italian Civil Protection weather alerts on your AWTRIX3 device.
 
-## ⚠️ Requisiti
+## ⚠️ Requirements
 
-Prima di utilizzare questo blueprint, assicurati di avere:
+Before using this blueprint, make sure you have:
 
-1. **Home Assistant** con supporto per i blueprint
-2. **AWTRIX 3** dispositivo configurato e connesso tramite MQTT
-3. **Integrazione DPC Alert** installata da [caiosweet/Home-Assistant-custom-components-DPC-Alert](https://github.com/caiosweet/Home-Assistant-custom-components-DPC-Alert)
+1. **Home Assistant** with blueprint support
+2. **AWTRIX 3** device configured and connected via MQTT
+3. **DPC Alert Integration** installed from [caiosweet/Home-Assistant-custom-components-DPC-Alert](https://github.com/caiosweet/Home-Assistant-custom-components-DPC-Alert)
 
-## 📦 Installazione
+## 📦 Installation
 
-### Metodo 1: Import automatico (consigliato)
+### Method 1: Automatic Import (recommended)
 
-1. Clicca sul pulsante qui sotto per importare il blueprint:
+1. Click the button below to import the blueprint:
 
-   [![Apri la tua Home Assistant e mostra il blueprint import dialog con un URL specifico pre-compilato.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2FRaythekool%2Fawtrix_dpc_alert%2Fblob%2Fmain%2Fawtrix_dpc_alert.yaml)
+   [![Open your Home Assistant instance and show the blueprint import dialog with a specific blueprint pre-filled.](https://my.home-assistant.io/badges/blueprint_import.svg)](https://my.home-assistant.io/redirect/blueprint_import/?blueprint_url=https%3A%2F%2Fgithub.com%2FRaythekool%2Fawtrix_dpc_alert%2Fblob%2Fmain%2Fawtrix_dpc_alert.yaml)
 
-2. Clicca su "Import Blueprint" nella tua Home Assistant
-3. Il blueprint sarà disponibile nelle tue automazioni
+2. Click "Import Blueprint" in your Home Assistant
+3. The blueprint will be available in your automations
 
-### Metodo 2: Import manuale
+### Method 2: Manual Import
 
-1. Vai in Home Assistant → Impostazioni → Automazioni e scene → Blueprint
-2. Clicca sul pulsante "Import Blueprint"
-3. Inserisci questo URL:
+1. Go to Home Assistant → Settings → Automations & Scenes → Blueprints
+2. Click the "Import Blueprint" button
+3. Enter this URL:
    ```
    https://github.com/Raythekool/awtrix_dpc_alert/blob/main/awtrix_dpc_alert.yaml
    ```
-4. Clicca su "Preview" e poi "Import Blueprint"
+4. Click "Preview" and then "Import Blueprint"
 
-### Metodo 3: File locale
+### Method 3: Local File
 
-1. Scarica il file `awtrix_dpc_alert.yaml`
-2. Copia il file nella cartella `blueprints/automation/` della tua configurazione Home Assistant
-3. Riavvia Home Assistant o ricarica le automazioni
+1. Download the `awtrix_dpc_alert.yaml` file
+2. Copy the file to the `blueprints/automation/` folder in your Home Assistant configuration
+3. Restart Home Assistant or reload automations
 
-## 🎨 Icone consigliate
+## 🎨 Recommended Icons
 
-Per una migliore visualizzazione, carica queste icone sul tuo AWTRIX:
+For better visualization, upload these icons to your AWTRIX:
 
-- **dpc-idraulico** (49300) - Rischio idraulico (alluvioni, esondazioni)
-- **dpc-temporali** (49299) - Rischio temporali
-- **dpc-idrogeologico** (2289) - Rischio idrogeologico (frane, smottamenti)
-- **dpc-warning** (16754) - Icona generica per alert
+- **dpc-idraulico** (49300) - Hydraulic risk (floods, overflows)
+- **dpc-temporali** (49299) - Storm risk
+- **dpc-idrogeologico** (2289) - Hydrogeological risk (landslides, mudslides)
+- **dpc-warning** (16754) - Generic alert icon
 
-Puoi trovare altre icone su [developer.lametric.com/icons](https://developer.lametric.com/icons) o crearne di personalizzate.
+You can find more icons at [developer.lametric.com/icons](https://developer.lametric.com/icons) or create custom ones.
 
-### 📤 Script automatico per caricare le icone
+### 📤 Automatic Script to Upload Icons
 
-Abbiamo incluso uno script che scarica automaticamente le icone consigliate da LaMetric e le carica sul tuo dispositivo AWTRIX.
+We've included a script that automatically downloads the recommended icons from LaMetric and uploads them to your AWTRIX device.
 
-**Utilizzo rapido:**
+**Quick usage:**
 
 ```bash
-# Carica tutte le icone consigliate per DPC alerts
+# Upload all recommended icons for DPC alerts (with IP provided)
 ./upload_icons.sh 192.168.1.100 --default-icons
 
-# Oppure usa direttamente Python
-python3 upload_icons.py 192.168.1.100 --default-icons
+# Or let the script prompt you for the IP address
+./upload_icons.sh --default-icons
+
+# Windows users can use the batch file
+upload_icons.bat --default-icons
+
+# Or use Python directly
+python3 upload_icons.py --default-icons
 ```
 
-Sostituisci `192.168.1.100` con l'indirizzo IP del tuo dispositivo AWTRIX.
+If you don't provide the IP address, the script will prompt you to enter it interactively.
 
-**Opzioni avanzate:**
+**Advanced options:**
 
 ```bash
-# Visualizza le icone predefinite
+# Display default icons
 ./upload_icons.sh --list-default
 
-# Carica icone personalizzate
-./upload_icons.sh 192.168.1.100 --icon my-icon 12345 --icon another-icon 67890
+# Upload custom icons (will prompt for IP if not provided)
+./upload_icons.sh --icon my-icon 12345 --icon another-icon 67890
 
-# Combina icone predefinite e personalizzate
+# Combine default and custom icons with IP provided
 ./upload_icons.sh 192.168.1.100 --default-icons --icon custom-icon 99999
 ```
 
-Lo script scarica automaticamente le icone da LaMetric e le carica sul tuo AWTRIX tramite HTTP. Non è necessario installare dipendenze aggiuntive, usa solo la libreria standard di Python 3.
+The script automatically downloads icons from LaMetric and uploads them to your AWTRIX via HTTP. No additional dependencies are needed, it only uses Python 3 standard library.
 
-## 🚀 Utilizzo
+## 🚀 Usage
 
-1. Vai in Home Assistant → Impostazioni → Automazioni e scene
-2. Clicca su "Crea automazione" → "Usa un blueprint"
-3. Seleziona "AWTRIX Protezione Civile Alert 🇮🇹"
-4. Configura i parametri:
-   - **Dispositivo AWTRIX**: Seleziona il tuo dispositivo AWTRIX
-   - **Sensori DPC Alert**: Seleziona i sensori di allerta da monitorare
-   - **Livello minimo di allerta**: Imposta il livello minimo (0-4)
-     - 0 = Mostra tutte le allerte
-     - 1 = Verde (Ordinaria criticità)
-     - 2 = Giallo (Moderata criticità)
-     - 3 = Arancione (Criticità elevata)
-     - 4 = Rosso (Criticità estrema)
-   - **Durata messaggio**: Tempo di visualizzazione in secondi (default: 20)
-   - **Icone**: Personalizza gli ID delle icone per ogni tipo di rischio
-5. Salva l'automazione
+1. Go to Home Assistant → Settings → Automations & Scenes
+2. Click "Create Automation" → "Use a blueprint"
+3. Select "AWTRIX Civil Protection Alert 🇮🇹"
+4. Configure the parameters:
+   - **AWTRIX Device**: Select your AWTRIX device
+   - **DPC Alert Sensors**: Select the alert sensors to monitor
+   - **Minimum Alert Level**: Set the minimum level (0-4)
+     - 0 = Show all alerts
+     - 1 = Green (Ordinary criticality)
+     - 2 = Yellow (Moderate criticality)
+     - 3 = Orange (High criticality)
+     - 4 = Red (Extreme criticality)
+   - **Message Duration**: Display time in seconds (default: 20)
+   - **Icons**: Customize icon IDs for each risk type
+5. Save the automation
 
-## 🎯 Funzionalità
+## 🎯 Features
 
-- **Monitoraggio multi-sensore**: Supporta più sensori DPC contemporaneamente
-- **Filtro per criticità**: Mostra solo le allerte sopra un certo livello
-- **Colori automatici**: I messaggi sono colorati in base al livello di criticità
-  - Verde: Ordinaria
-  - Giallo: Moderata
-  - Arancione: Elevata
-  - Rosso: Estrema
-- **Icone personalizzabili**: Usa icone diverse per ogni tipo di rischio
-- **Multi-dispositivo**: Supporta più dispositivi AWTRIX contemporaneamente
-- **Auto-clear**: Rimuove automaticamente gli alert quando non sono più attivi
+- **Multi-sensor monitoring**: Supports multiple DPC sensors simultaneously
+- **Criticality filter**: Shows only alerts above a certain level
+- **Automatic colors**: Messages are colored based on criticality level
+  - Green: Ordinary
+  - Yellow: Moderate
+  - Orange: High
+  - Red: Extreme
+- **Customizable icons**: Use different icons for each risk type
+- **Multi-device**: Supports multiple AWTRIX devices simultaneously
+- **Auto-clear**: Automatically removes alerts when they are no longer active
 
-## 🔧 Configurazione avanzata
+## 🔧 Advanced Configuration
 
-### Personalizzare la durata dei messaggi
+### Customizing Message Duration
 
-Il parametro "Durata messaggio" controlla quanto tempo l'alert rimane sullo schermo:
-- `0` = usa il tempo globale del dispositivo AWTRIX
-- `1-300` = secondi specifici (massimo 5 minuti)
+The "Message Duration" parameter controls how long the alert remains on screen:
+- `0` = use the device's global time setting
+- `1-300` = specific seconds (maximum 5 minutes)
 
-### Usare icone personalizzate
+### Using Custom Icons
 
-Puoi usare qualsiasi icona da LaMetric o caricarne di personalizzate sul tuo AWTRIX. Basta inserire l'ID dell'icona nei campi corrispondenti.
+You can use any icon from LaMetric or upload custom ones to your AWTRIX. Just enter the icon ID in the corresponding fields.
 
-## 📝 Note
+## 📝 Notes
 
-- Il blueprint usa il modo "restart" per evitare duplicati quando arrivano più alert
-- Gli alert vengono pubblicati su MQTT nel topic `custom/dpc_alert`
-- Se ci sono più alert attivi, verranno mostrati in sequenza
+- The blueprint uses "restart" mode to avoid duplicates when multiple alerts arrive
+- Alerts are published to MQTT on the topic `custom/dpc_alert`
+- If there are multiple active alerts, they will be displayed in sequence
 
-## 🤝 Contributi
+## 🤝 Contributing
 
-Contributi, segnalazioni di bug e richieste di funzionalità sono benvenuti! Sentiti libero di aprire una issue o una pull request.
+Contributions, bug reports, and feature requests are welcome! Feel free to open an issue or pull request.
 
-## 📄 Licenza
+## 📄 License
 
-Questo progetto è distribuito sotto licenza MIT. Vedi il file `LICENSE` per maggiori dettagli.
+This project is distributed under the MIT License. See the `LICENSE` file for more details.
 
-## 🙏 Crediti
+## 🙏 Credits
 
-- Integrazione DPC Alert: [caiosweet](https://github.com/caiosweet/Home-Assistant-custom-components-DPC-Alert)
+- DPC Alert Integration: [caiosweet](https://github.com/caiosweet/Home-Assistant-custom-components-DPC-Alert)
 - AWTRIX 3: [Blueforcer](https://github.com/Blueforcer/awtrix3)
-- Ispirazione dal flow: [Blueforcer Flow](https://flows.blueforcer.de/flow/rM3xOBxvA8Lz#)
+- Inspiration from flow: [Blueforcer Flow](https://flows.blueforcer.de/flow/rM3xOBxvA8Lz#)

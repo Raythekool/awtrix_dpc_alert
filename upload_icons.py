@@ -199,7 +199,7 @@ def main():
     parser.add_argument(
         'device_ip',
         nargs='?',
-        help='IP address of the AWTRIX device (e.g., 192.168.1.100)'
+        help='IP address of the AWTRIX device (e.g., 192.168.1.100). If not provided, you will be prompted.'
     )
     
     parser.add_argument(
@@ -232,11 +232,15 @@ def main():
             print(f"  {name:20} - ID: {icon_id}")
         return 0
     
-    # Validate device IP is provided
+    # Prompt for device IP if not provided
     if not args.device_ip:
-        print("Error: device_ip is required when uploading icons")
-        print("Run with --help for more information.")
-        return 1
+        print("AWTRIX Device IP Address")
+        print("=" * 60)
+        device_ip = input("Enter the IP address or hostname of your AWTRIX device: ").strip()
+        if not device_ip:
+            print("Error: No IP address provided")
+            return 1
+        args.device_ip = device_ip
     
     # Validate device IP format
     if not validate_ip_or_hostname(args.device_ip):
