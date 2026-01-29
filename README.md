@@ -48,6 +48,37 @@ Per una migliore visualizzazione, carica queste icone sul tuo AWTRIX:
 
 Puoi trovare altre icone su [developer.lametric.com/icons](https://developer.lametric.com/icons) o crearne di personalizzate.
 
+### 📤 Script automatico per caricare le icone
+
+Abbiamo incluso uno script che scarica automaticamente le icone consigliate da LaMetric e le carica sul tuo dispositivo AWTRIX.
+
+**Utilizzo rapido:**
+
+```bash
+# Carica tutte le icone consigliate per DPC alerts
+./upload_icons.sh 192.168.1.100 --default-icons
+
+# Oppure usa direttamente Python
+python3 upload_icons.py 192.168.1.100 --default-icons
+```
+
+Sostituisci `192.168.1.100` con l'indirizzo IP del tuo dispositivo AWTRIX.
+
+**Opzioni avanzate:**
+
+```bash
+# Visualizza le icone predefinite
+./upload_icons.sh --list-default
+
+# Carica icone personalizzate
+./upload_icons.sh 192.168.1.100 --icon my-icon 12345 --icon another-icon 67890
+
+# Combina icone predefinite e personalizzate
+./upload_icons.sh 192.168.1.100 --default-icons --icon custom-icon 99999
+```
+
+Lo script scarica automaticamente le icone da LaMetric e le carica sul tuo AWTRIX tramite HTTP. Non è necessario installare dipendenze aggiuntive, usa solo la libreria standard di Python 3.
+
 ## 🚀 Utilizzo
 
 1. Vai in Home Assistant → Impostazioni → Automazioni e scene
