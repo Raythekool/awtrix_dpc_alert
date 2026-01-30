@@ -19,8 +19,8 @@ from typing import List, Tuple
 
 # Default recommended icons for DPC alerts
 DEFAULT_ICONS = {
-    "dpc-idraulico": 49300,
-    "dpc-temporali": 49299,
+    "dpc-idraulico": 17055,
+    "dpc-temporali": 2289,
     "dpc-idrogeologico": 2289,
     "dpc-warning": 16754,
 }
@@ -91,8 +91,8 @@ def download_icon(icon_id: int) -> Tuple[bytes, str]:
     Raises:
         urllib.error.URLError: If download fails
     """
-    # Try PNG first, then GIF
-    for ext in ['png', 'gif']:
+    # Try GIF first (preferred by AWTRIX), then PNG
+    for ext in ['gif', 'png']:
         url = f"https://developer.lametric.com/content/apps/icon_thumbs/{icon_id}_icon_thumb.{ext}"
         try:
             with urllib.request.urlopen(url, timeout=REQUEST_TIMEOUT) as response:

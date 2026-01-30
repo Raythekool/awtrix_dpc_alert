@@ -47,7 +47,7 @@ blueprint:
 
     icon_test:
       name: Test Icon
-      description: Icon ID to display in the test
+      description: Icon filename to display in the test (without extension)
       selector:
         text: {}
       default: "dpc-warning"
@@ -123,7 +123,7 @@ variables:
       0: "#0080FF",
       1: "#00FF00",
       2: "#FFFF00",
-      3: "#FF8000",
+      3: "#FF6000",
       4: "#FF0000"
     }) }}
 
@@ -142,10 +142,14 @@ variables:
       'duration': message_duration,
       'color': color_map[test_level],
       'pushIcon': 2,
-      'repeat': 1
+      'repeat': 1,
+      'effect': 'ripple'
     } %}
     {%- if enable_sound %}
       {%- set _ = alert_obj.update({'sound': sound_file}) %}
+    {%- endif %}
+    {%- if display_mode in ['notification', 'both'] %}
+      {%- set _ = alert_obj.update({'hold': true}) %}
     {%- endif %}
     {{ alert_obj|tojson }}
 

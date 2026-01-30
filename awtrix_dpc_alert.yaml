@@ -64,32 +64,32 @@ blueprint:
 
     icon_idraulico:
       name: Icona Rischio Idraulico
-      description: "Icona per il rischio idraulico (alluvioni, esondazioni)\n
-        ![flood](https://developer.lametric.com/content/apps/icon_thumbs/17055_icon_thumb.gif?v=1)"
+      description: "Icona per il rischio idraulico (alluvioni, esondazioni).\n
+        Nome file: dpc-idraulico"
       selector:
         text: {}
       default: "dpc-idraulico"
 
     icon_temporali:
       name: Icona Rischio Temporali
-      description: "Icona per il rischio temporali\n
-        ![lightning](https://developer.lametric.com/content/apps/icon_thumbs/49299_icon_thumb.gif?v=4)"
+      description: "Icona per il rischio temporali.\n
+        Nome file: dpc-temporali"
       selector:
         text: {}
       default: "dpc-temporali"
 
     icon_idrogeologico:
       name: Icona Rischio Idrogeologico
-      description: "Icona per il rischio idrogeologico (frane, smottamenti)\n
-        ![waves](https://developer.lametric.com/content/apps/icon_thumbs/2289_icon_thumb.gif?v=1)"
+      description: "Icona per il rischio idrogeologico (frane, smottamenti).\n
+        Nome file: dpc-idrogeologico"
       selector:
         text: {}
       default: "dpc-idrogeologico"
 
     icon_warning:
       name: Icona Alert Generica
-      description: "Icona generica per altri tipi di alert\n
-        ![warning](https://developer.lametric.com/content/apps/icon_thumbs/16754_icon_thumb.gif?v=1)"
+      description: "Icona generica per altri tipi di alert.\n
+        Nome file: dpc-warning"
       selector:
         text: {}
       default: "dpc-warning"
@@ -190,7 +190,7 @@ variables:
       0: "#0080FF",
       1: "#00FF00",
       2: "#FFFF00",
-      3: "#FF8000",
+      3: "#FF6000",
       4: "#FF0000"
     }) }}
 
@@ -230,10 +230,14 @@ variables:
           'duration': message_duration,
           'color': color_map[level],
           'pushIcon': 2,
-          'repeat': 1
+          'repeat': 1,
+          'effect': 'ripple'
         } %}
         {%- if enable_sound and level >= sound_level %}
           {%- set _ = alert_obj.update({'sound': sound_file}) %}
+        {%- endif %}
+        {%- if display_mode in ['notification', 'both'] %}
+          {%- set _ = alert_obj.update({'hold': true}) %}
         {%- endif %}
         {%- set ns.alerts = ns.alerts + [alert_obj] %}
       {%- endif %}
