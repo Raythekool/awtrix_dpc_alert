@@ -142,10 +142,10 @@ variables:
       'overlay': 'clear'
     } %}
     {%- if enable_sound %}
-      {%- set _ = alert_obj.update({'sound': sound_file}) %}
+      {%- set alert_obj = dict(alert_obj, sound=sound_file) %}
     {%- endif %}
     {%- if display_mode in ['notification', 'both'] %}
-      {%- set _ = alert_obj.update({'hold': true}) %}
+      {%- set alert_obj = dict(alert_obj, hold=true) %}
     {%- endif %}
     {{ alert_obj|tojson }}
 
