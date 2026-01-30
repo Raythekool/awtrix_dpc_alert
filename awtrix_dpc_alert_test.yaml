@@ -50,7 +50,7 @@ blueprint:
       description: Icon ID to display in the test
       selector:
         text: {}
-      default: "16754"
+      default: "dpc-warning"
 
     enable_sound:
       name: Test with Sound 🔊

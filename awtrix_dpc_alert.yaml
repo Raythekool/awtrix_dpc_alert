@@ -68,7 +68,7 @@ blueprint:
         ![flood](https://developer.lametric.com/content/apps/icon_thumbs/17055_icon_thumb.gif?v=1)"
       selector:
         text: {}
-      default: "49300"
+      default: "dpc-idraulico"
 
     icon_temporali:
       name: Icona Rischio Temporali
@@ -76,7 +76,7 @@ blueprint:
         ![lightning](https://developer.lametric.com/content/apps/icon_thumbs/49299_icon_thumb.gif?v=4)"
       selector:
         text: {}
-      default: "49299"
+      default: "dpc-temporali"
 
     icon_idrogeologico:
       name: Icona Rischio Idrogeologico
@@ -84,7 +84,7 @@ blueprint:
         ![waves](https://developer.lametric.com/content/apps/icon_thumbs/2289_icon_thumb.gif?v=1)"
       selector:
         text: {}
-      default: "2289"
+      default: "dpc-idrogeologico"
 
     icon_warning:
       name: Icona Alert Generica
@@ -92,7 +92,7 @@ blueprint:
         ![warning](https://developer.lametric.com/content/apps/icon_thumbs/16754_icon_thumb.gif?v=1)"
       selector:
         text: {}
-      default: "16754"
+      default: "dpc-warning"
 
     enable_sound:
       name: Abilita Suono 🔊
