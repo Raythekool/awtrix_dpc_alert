@@ -51,7 +51,9 @@ This blueprint allows you to send test notifications to your AWTRIX devices to v
 - Send test notifications with different criticality levels (1-4)
 - Test icon display
 - Test sound notifications
-- Configurable message duration
+- Configurable message and notification durations
+- Choose display mode: Custom App (persistent), Notification (temporary), or Both
+- Automatic hold mode when notification duration is set to 0
 
 **Import:**
 
@@ -88,6 +90,8 @@ For better visualization, upload these icons to your AWTRIX:
 - **dpc-temporali** (49299) - Storm risk
 - **dpc-idrogeologico** (2289) - Hydrogeological risk (landslides, mudslides)
 - **dpc-warning** (16754) - Generic alert icon
+
+**Important:** AWTRIX supports GIF format icons. The upload script automatically prioritizes downloading GIF versions over PNG format for better compatibility.
 
 You can find more icons at [developer.lametric.com/icons](https://developer.lametric.com/icons) or create custom ones.
 
@@ -143,9 +147,9 @@ python3 upload_icons.py 192.168.1.100
 ```
 
 **What the script does:**
-- Downloads icons from LaMetric's public icon library
-- Converts and uploads them to your AWTRIX device via HTTP API
-- No additional dependencies needed - uses only Python 3 standard library
+- Downloads icons from LaMetric's public icon library (prioritizes GIF format)
+- Converts and uploads them to your AWTRIX device `/ICONS/` folder via HTTP API
+- No additional dependencies needed - uses only Python 3 standard library with requests module
 - Works on Linux, Mac, and Windows
 
 The script automatically downloads icons from LaMetric and uploads them to your AWTRIX via HTTP. No additional dependencies are needed, it only uses Python 3 standard library.
@@ -164,11 +168,15 @@ The script automatically downloads icons from LaMetric and uploads them to your 
      - 2 = Yellow (Moderate criticality)
      - 3 = Orange (High criticality)
      - 4 = Red (Extreme criticality)
-   - **Message Duration**: Display time in seconds (default: 20)
-   - **Icons**: Customize icon IDs for each risk type
+   - **Message Duration**: Display time for custom app in seconds (default: 20)
+   - **Notification Duration**: Display time for notifications in seconds (default: 0 = hold until dismissed)
+   - **Icons**: Customize icon names for each risk type (without extension)
    - **Enable Sound**: Toggle sound notifications
    - **Sound Level**: Minimum alert level to play sound (default: Orange/High)
-   - **Send AWTRIX Notification**: Send temporary pop-up notifications in addition to persistent custom app
+   - **Display Mode**: Choose how to display alerts:
+     - Custom App (Persistent): Stays on screen until cleared
+     - Notification (Temporary): Pop-up that auto-dismisses or holds based on duration
+     - Both: Send both custom app and notification
 5. Save the automation
 
 ### 🧪 Testing Your Setup
@@ -181,8 +189,9 @@ After installing the test blueprint, create an automation to send test notificat
 4. Configure:
    - Select your AWTRIX device(s)
    - Choose a test criticality level (1-4)
+   - Set message duration (for custom app) and notification duration (0 = hold until dismissed)
    - Enable sound if desired
-   - Toggle between custom app (persistent) or notification (temporary pop-up)
+   - Choose display mode: Custom App (persistent), Notification (temporary), or Both
 5. Save the automation and trigger it manually to test
 
 ### 🗑️ Clearing the Display
@@ -197,46 +206,121 @@ If you need to remove the DPC Alert app from your AWTRIX devices:
 
 - **Multi-sensor monitoring**: Supports multiple DPC sensors simultaneously
 - **Criticality filter**: Shows only alerts above a certain level
-- **Automatic colors**: Messages are colored based on criticality level
+- **Automatic colors**: Messages are colored based on criticality level (vivid colors)
+  - Blue: No alert
   - Green: Ordinary
   - Yellow: Moderate
-  - Orange: High
+  - Dark Orange: High
   - Red: Extreme
-- **Customizable icons**: Use different icons for each risk type
-- **Sound notifications**: Optional sound alerts for critical warnings
-- **AWTRIX notifications**: Send temporary pop-up notifications in addition to persistent custom app
+- **Ripple effect**: Visual background effect for high-criticality alerts (levels 3 and 4)
+- **Customizable icons**: Use different icons for each risk type (GIF format recommended)
+- **Sound notifications**: Optional sound alerts for critical warnings with configurable threshold
+- **Display modes**: Choose between Custom App (persistent), Notification (temporary), or Both
+- **Flexible duration**: Separate durations for custom apps and notifications
+- **Hold mode**: Notifications with duration 0 stay on screen until manually dismissed
 - **Multi-device**: Supports multiple AWTRIX devices simultaneously
 - **Auto-clear**: Automatically removes alerts when they are no longer active
-- **Test mode**: Send test notifications to verify configuration (custom app or notification mode)
+- **Test mode**: Send test notifications to verify configuration with all display options
 - **Manual clear**: Remove apps from display when needed
 
 ## 🔧 Advanced Configuration
 
 ### Customizing Message Duration
 
-The "Message Duration" parameter controls how long the alert remains on screen:
-- `0` = use the device's global time setting
-- `1-300` = specific seconds (maximum 5 minutes)
+The blueprint provides two duration settings:
+
+- **Message Duration**: Controls display time for custom apps (persistent mode)
+  - `0` = use the device's global time setting
+  - `1-300` = specific seconds (maximum 5 minutes)
+
+- **Notification Duration**: Controls display time for notifications
+  - `0` = hold mode (notification stays until manually dismissed via middle button)
+  - `1-300` = auto-dismiss after specified seconds
+
+### Display Modes
+
+The blueprint supports three display modes:
+
+- **Custom App (Persistent)**: Alert stays on AWTRIX as a persistent app until cleared
+  - Published to MQTT topic `{prefix}/custom/dpc_alert`
+  - Uses message_duration setting
+  - Ideal for ongoing alerts you want to monitor continuously
+
+- **Notification (Temporary)**: Pop-up notification that appears immediately
+  - Published to MQTT topic `{prefix}/notify`
+  - Uses notification_duration setting
+  - When duration is 0, includes `hold: true` (dismiss with middle button)
+  - Ideal for immediate attention alerts
+
+- **Both**: Sends both custom app and notification simultaneously
+  - Maximum visibility for critical alerts
+  - Custom app persists while notification provides immediate pop-up
+
+### Visual Effects
+
+The blueprint automatically applies visual effects based on alert severity:
+
+- **Ripple Effect**: Applied only to high-criticality alerts (levels 3 and 4)
+  - Creates an animated background ripple effect
+  - Uses default AWTRIX settings (speed=3, Rainbow palette, blend=true)
+  - Lower severity alerts (levels 1-2) display without effects
 
 ### Using Custom Icons
 
 
+### Using Custom Icons
+
+You can use any icon from LaMetric or upload custom ones to your AWTRIX `/ICONS/` folder. Enter the icon filename (without extension) in the corresponding fields. The blueprint references icons by name, not by LaMetric ID.
+
+**Icon format:** GIF format is recommended for best compatibility with AWTRIX.
+
 ### AWTRIX Notifications vs Custom Apps
 
-The blueprint supports two display modes:
+Understanding the difference between display modes:
 
-- Custom app alerts are published to MQTT topic `{prefix}/custom/dpc_alert`
-- Notifications are published to MQTT topic `{prefix}/notify` (temporary pop-ups)ble until cleared. Published to `{prefix}/custom/dpc_alert`
-- **Notification (optional)**: Temporary pop-up notifications that auto-dismiss. Published to `{prefix}/notify`
+- **Custom App**: Persistent alert that stays visible until cleared
+  - Topic: `{prefix}/custom/dpc_alert`
+  - Duration controlled by `message_duration`
+  - Best for: Ongoing weather alerts you want to monitor
+  
+- **Notification**: Temporary pop-up that overlays current display
+  - Topic: `{prefix}/notify`
+  - Duration controlled by `notification_duration`
+  - When duration = 0: Includes `hold: true` (manual dismiss required)
+  - Best for: Immediate attention alerts
 
-You can enable both modes simultaneously - the custom app stays persistent while notifications provide immediate pop-up alerts.
-You can use any icon from LaMetric or upload custom ones to your AWTRIX. Just enter the icon ID in the corresponding fields.
+- **Both**: Combines persistence and immediacy
+  - Custom app provides continuous visibility
+  - Notification ensures immediate attention
+
+### Payload Structure
+
+The blueprint generates AWTRIX-compatible payloads with these properties:
+
+```json
+{
+  "icon": "dpc-warning",
+  "text": "Alert message",
+  "duration": 20,
+  "color": "#FF6000",
+  "stack": false,
+  "overlay": "clear",
+  "effect": "Ripple",     // Only for levels 3-4
+  "sound": "alarm",       // Optional, based on settings
+  "hold": true            // Only for notifications with duration=0
+}
+```
 
 ## 📝 Notes
 
 - The blueprint uses "restart" mode to avoid duplicates when multiple alerts arrive
-- Alerts are published to MQTT on the topic `custom/dpc_alert`
+- Custom apps are published to MQTT topic `{prefix}/custom/dpc_alert`
+- Notifications are published to MQTT topic `{prefix}/notify`
 - If there are multiple active alerts, they will be displayed in sequence
+- Ripple effect is automatically applied only to high-criticality alerts (levels 3-4)
+- Icon files should be in GIF format and uploaded to AWTRIX `/ICONS/` folder
+- Notifications with duration=0 automatically use hold mode (manual dismiss required)
+- Home Assistant's Jinja2 sandbox restrictions: Uses `dict()` constructor instead of `.update()` method
 
 ## 🤝 Contributing
 
