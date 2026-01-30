@@ -137,9 +137,9 @@ variables:
       'text': 'TEST DPC Alert - Livello ' ~ level_names[test_level],
       'duration': message_duration,
       'color': color_map[test_level],
-      'pushIcon': 2,
-      'repeat': 1,
-      'effect': 'Ripple'
+      'stack': false,
+      'effect': 'Ripple',
+      'overlay': 'clear'
     } %}
     {%- if enable_sound %}
       {%- set _ = alert_obj.update({'sound': sound_file}) %}

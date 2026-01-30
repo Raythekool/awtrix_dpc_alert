@@ -225,9 +225,9 @@ variables:
           'text': alert ~ ' - ' ~ zone,
           'duration': message_duration,
           'color': color_map[level],
-          'pushIcon': 2,
-          'repeat': 1,
-          'effect': 'Ripple'
+          'stack': false,
+          'effect': 'Ripple',
+          'overlay': 'clear'
         } %}
         {%- if enable_sound and level >= sound_level %}
           {%- set _ = alert_obj.update({'sound': sound_file}) %}
