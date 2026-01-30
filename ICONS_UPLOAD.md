@@ -17,7 +17,7 @@ You can find more icons at [developer.lametric.com/icons](https://developer.lame
 
 We've included a script that automatically downloads the recommended icons from LaMetric and uploads them to your AWTRIX device.
 
-### Easiest method - Just run the script:
+### Easiest method - Just run the script
 
 ```bash
 # Linux/Mac - runs with default icons, prompts for IP
@@ -31,11 +31,12 @@ python3 upload_icons.py
 ```
 
 When you run the script without any parameters, it will:
+
 1. Prompt you to enter your AWTRIX device IP address
 2. Automatically download all 4 recommended DPC icons from LaMetric
 3. Upload them to your AWTRIX device
 
-### Quick usage with IP address:
+### Quick usage with IP address
 
 ```bash
 # Provide IP address directly (Linux/Mac)
@@ -48,7 +49,7 @@ upload_icons.bat 192.168.1.100
 python3 upload_icons.py 192.168.1.100
 ```
 
-### Advanced options:
+### Advanced options
 
 ```bash
 # Display the list of default icons without uploading
@@ -64,7 +65,7 @@ python3 upload_icons.py 192.168.1.100
 ./upload_icons.sh 192.168.1.100 --icon my-custom-icon 54321
 ```
 
-### What the script does:
+### What the script does
 
 - Downloads icons from LaMetric's public icon library (prioritizes GIF format)
 - Converts and uploads them to your AWTRIX device `/ICONS/` folder via HTTP API
