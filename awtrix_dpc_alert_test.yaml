@@ -45,6 +45,18 @@ blueprint:
           mode: slider
       default: 20
 
+    notification_duration:
+      name: Notification Duration 🔔
+      description: How long the notification should remain visible (0 = hold until dismissed)
+      selector:
+        number:
+          min: 0
+          max: 300
+          unit_of_measurement: sec
+          step: 1
+          mode: slider
+      default: 0
+
     icon_test:
       name: Test Icon
       description: Icon filename to display in the test (without extension)
@@ -91,6 +103,7 @@ variables:
   app_topic: "dpc_alert"
   test_level: !input test_level
   message_duration: !input message_duration
+  notification_duration: !input notification_duration
   icon_test: !input icon_test
   enable_sound: !input enable_sound
   sound_file: !input sound_file
@@ -132,10 +145,11 @@ variables:
     4: "Estrema"
 
   test_payload: |
+    {%- set duration_value = message_duration if display_mode == 'app' else notification_duration %}
     {%- set alert_obj = {
       'icon': icon_test,
       'text': 'TEST DPC Alert - Livello ' ~ level_names[test_level],
-      'duration': message_duration,
+      'duration': duration_value,
       'color': color_map[test_level],
       'stack': false,
       'effect': 'Ripple',
@@ -144,7 +158,7 @@ variables:
     {%- if enable_sound %}
       {%- set alert_obj = dict(alert_obj, sound=sound_file) %}
     {%- endif %}
-    {%- if display_mode in ['notification', 'both'] %}
+    {%- if display_mode in ['notification', 'both'] and notification_duration == 0 %}
       {%- set alert_obj = dict(alert_obj, hold=true) %}
     {%- endif %}
     {{ alert_obj|tojson }}

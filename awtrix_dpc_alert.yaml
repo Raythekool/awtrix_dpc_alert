@@ -62,6 +62,18 @@ blueprint:
           mode: slider
       default: 20
 
+    notification_duration:
+      name: Durata notifica 🔔
+      description: Quanto tempo deve rimanere visibile la notifica (0 = mantieni fino a dismissione manuale)
+      selector:
+        number:
+          min: 0
+          max: 300
+          unit_of_measurement: sec
+          step: 1
+          mode: slider
+      default: 0
+
     icon_idraulico:
       name: Icona Rischio Idraulico
       description: "Icona per il rischio idraulico (alluvioni, esondazioni).\n
@@ -175,6 +187,7 @@ variables:
   dpc_sensors: !input dpc_sensors
   warning_level: !input warning_level
   message_duration: !input message_duration
+  notification_duration: !input notification_duration
   icon_idraulico: !input icon_idraulico
   icon_temporali: !input icon_temporali
   icon_idrogeologico: !input icon_idrogeologico
@@ -220,10 +233,11 @@ variables:
           {%- set icon = icon_idrogeologico %}
         {%- endif %}
         
+        {%- set duration_value = message_duration if display_mode == 'app' else notification_duration %}
         {%- set alert_obj = {
           'icon': icon,
           'text': alert ~ ' - ' ~ zone,
-          'duration': message_duration,
+          'duration': duration_value,
           'color': color_map[level],
           'stack': false,
           'effect': 'Ripple',
@@ -232,7 +246,7 @@ variables:
         {%- if enable_sound and level >= sound_level %}
           {%- set alert_obj = dict(alert_obj, sound=sound_file) %}
         {%- endif %}
-        {%- if display_mode in ['notification', 'both'] %}
+        {%- if display_mode in ['notification', 'both'] and notification_duration == 0 %}
           {%- set alert_obj = dict(alert_obj, hold=true) %}
         {%- endif %}
         {%- set ns.alerts = ns.alerts + [alert_obj] %}
